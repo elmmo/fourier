@@ -74,6 +74,13 @@ class Department:
             if (constraintIndex != -1):
                 title = "{} {}".format(titleParts[0], titleParts[1]) 
                 constraints.update({ title : descr[constraintIndex:] })
+        # split constraints values by "." separating them into prerequisites and semesters offered
+        for course in constraints:
+            constraints[course] = constraints[course].split(".")
+            for i in range(len(constraints[course])):
+                constraints[course][i] = constraints[course][i].strip()
+                if constraints[course][i] == "":
+                    del constraints[course][i]
         return constraints
 
     # gets the table corresponding to the core courses
