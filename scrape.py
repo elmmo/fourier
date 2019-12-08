@@ -1,6 +1,25 @@
 from bs4 import BeautifulSoup
 import requests
 
+# Degree Plan Key
+# index | Degree Option
+# ------|----------------------------------------
+#   0   | Mathematics - General Major, B.A.
+#   1   | Mathematics - Education Major, B.A.
+#   2   | Mathematics Major, B.S.
+#   3   | Mathematical Economics Major, B.A.
+#   4   | Computer Science Core Courses
+#   5   | International Project Management Option
+#   6   | Business Option
+#   7   | Network Systems Option
+#   8   | Computer Science Major, B.S.
+#   9   | Bioinformatics Major, B.S.
+#  10   | Human-Computer Interaction Major, B.A.
+#  11   | Mathematics Minor
+#  12   | Mathematics Minor
+#  13   | Computer Science Minor
+#  14   | Information Technology Minor
+
 class Degree: 
     def __init__(self, title, courses, coursesByName, constraints): 
         self.title = title
@@ -23,7 +42,7 @@ class Department:
         print("Implement later: ask for degree name and look up degree by name")
         # for i in range(len(self.optionsByTitle)):
         #     print(self.optionsByTitle[i].get_text())
-        degree = self.majorsClasses[9]
+        degree = self.majorsClasses[8] # Change the index here to change the degree plan according to the key above
         courses = []
         coursesByName = {}
         self.__parseCourseRequirements(degree, courses, coursesByName)
@@ -55,6 +74,13 @@ class Department:
             if (constraintIndex != -1):
                 title = "{} {}".format(titleParts[0], titleParts[1]) 
                 constraints.update({ title : descr[constraintIndex:] })
+        # split constraints values by "." separating them into prerequisites and semesters offered
+        for course in constraints:
+            constraints[course] = constraints[course].split(".")
+            for i in range(len(constraints[course])):
+                constraints[course][i] = constraints[course][i].strip()
+                if constraints[course][i] == "":
+                    del constraints[course][i]
         return constraints
 
     # gets the table corresponding to the core courses
@@ -100,6 +126,28 @@ class Department:
                     courses.append(cInfo) 
                     if (len(cInfo) < 8 and len(cName) > 1): # for coursesByName, ignore all comments 
                         coursesByName.update({ cInfo : cName })
+        # group requirements like "two of the following courses" into arrays of the form:
+        # ['two of the following courses', 'MA 317', 'MA 357', 'MA 410', 'MA 430W', 'MA 430', 'MA 440']
+        # So it is easier to access which classes are under which requirements
+        i = 0
+        while i < len(courses):
+            if courses[i].find("of the following") != -1:
+                j = i + 1
+                while j < len(courses):
+                    if len(courses[j]) > 12:
+                        break
+                    else:
+                        if type(courses[i]) == type([]):
+                            courses[i].append(courses[j])
+                        else:
+                            courses[i] = [courses[i], courses[j]]
+                    j += 1
+                k = 0
+                while k < len(courses[i])-1:
+                    del courses[i+1]
+                    k += 1
+
+            i += 1
         return courses, coursesByName
 
 url = 'http://catalog.whitworth.edu/undergraduate/mathcomputerscience/#text'
