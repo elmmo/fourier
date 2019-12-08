@@ -126,6 +126,28 @@ class Department:
                     courses.append(cInfo) 
                     if (len(cInfo) < 8 and len(cName) > 1): # for coursesByName, ignore all comments 
                         coursesByName.update({ cInfo : cName })
+        # group requirements like "two of the following courses" into arrays of the form:
+        # ['two of the following courses', 'MA 317', 'MA 357', 'MA 410', 'MA 430W', 'MA 430', 'MA 440']
+        # So it is easier to access which classes are under which requirements
+        i = 0
+        while i < len(courses):
+            if courses[i].find("of the following") != -1:
+                j = i + 1
+                while j < len(courses):
+                    if len(courses[j]) > 12:
+                        break
+                    else:
+                        if type(courses[i]) == type([]):
+                            courses[i].append(courses[j])
+                        else:
+                            courses[i] = [courses[i], courses[j]]
+                    j += 1
+                k = 0
+                while k < len(courses[i])-1:
+                    del courses[i+1]
+                    k += 1
+
+            i += 1
         return courses, coursesByName
 
 url = 'http://catalog.whitworth.edu/undergraduate/mathcomputerscience/#text'
