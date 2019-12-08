@@ -1,6 +1,25 @@
 from bs4 import BeautifulSoup
 import requests
 
+# Degree Plan Key
+# index | Degree Option
+# ------|----------------------------------------
+#   0   | Mathematics - General Major, B.A.
+#   1   | Mathematics - Education Major, B.A.
+#   2   | Mathematics Major, B.S.
+#   3   | Mathematical Economics Major, B.A.
+#   4   | Computer Science Core Courses
+#   5   | International Project Management Option
+#   6   | Business Option
+#   7   | Network Systems Option
+#   8   | Computer Science Major, B.S.
+#   9   | Bioinformatics Major, B.S.
+#  10   | Human-Computer Interaction Major, B.A.
+#  11   | Mathematics Minor
+#  12   | Mathematics Minor
+#  13   | Computer Science Minor
+#  14   | Information Technology Minor
+
 class Degree: 
     def __init__(self, title, courses, coursesByName, constraints): 
         self.title = title
@@ -23,7 +42,7 @@ class Department:
         print("Implement later: ask for degree name and look up degree by name")
         # for i in range(len(self.optionsByTitle)):
         #     print(self.optionsByTitle[i].get_text())
-        degree = self.majorsClasses[6]
+        degree = self.majorsClasses[8] # Change the index here to change the degree plan according to the key above
         courses = []
         coursesByName = {}
         self.__parseCourseRequirements(degree, courses, coursesByName)
