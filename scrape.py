@@ -23,7 +23,7 @@ class Department:
         print("Implement later: ask for degree name and look up degree by name")
         # for i in range(len(self.optionsByTitle)):
         #     print(self.optionsByTitle[i].get_text())
-        degree = self.majorsClasses[6]
+        degree = self.majorsClasses[9]
         courses = []
         coursesByName = {}
         self.__parseCourseRequirements(degree, courses, coursesByName)
@@ -111,3 +111,5 @@ print("\nCourses By Name:")
 print(degree.coursesByName)
 print("\nCourses:")
 print(degree.courses)
+print("\nConstraints:")
+print(degree.constraints)
