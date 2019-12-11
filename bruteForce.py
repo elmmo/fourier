@@ -21,7 +21,7 @@ schedule = {
     "323": [],
 }
 
-plannedCourses = []
+scheduledCourses = []
 
 # This function parses the constraints for a course and splits them into time constraints and prerequisites
 def getConstraints(course):
@@ -70,6 +70,7 @@ def planIndividualCourse(course):
             eligible = len(prerequisites) == 0
             if eligible:
                 schedule["119"].append(course)
+                scheduledCourses.append(course)
                 scheduled = True
     if len(schedule["220"]) < 1 and scheduled == False:
         if time.find("jan") != -1 and time.find("odd") == -1:
@@ -80,6 +81,7 @@ def planIndividualCourse(course):
                     break
             if eligible:
                 schedule["220"].append(course)
+                scheduledCourses.append(course)
                 scheduled = True
     if len(schedule["320"]) < 3 and scheduled == False:
         if time.find("spring") != -1 and time.find("odd") == -1:
@@ -90,8 +92,8 @@ def planIndividualCourse(course):
                     break
             if eligible:
                 schedule["320"].append(course)
+                scheduledCourses.append(course)
                 scheduled = True
-
     if len(schedule["120"]) < 3 and scheduled == False:
         if time.find("fall") != -1 and time.find("odd") == -1:
             eligible = True
@@ -101,6 +103,7 @@ def planIndividualCourse(course):
                     break
             if eligible:
                 schedule["120"].append(course)
+                scheduledCourses.append(course)
                 scheduled = True
     if len(schedule["221"]) < 1 and scheduled == False:
         if time.find("jan") != -1 and time.find("even") == -1:
@@ -111,6 +114,7 @@ def planIndividualCourse(course):
                     break
             if eligible:
                 schedule["221"].append(course)
+                scheduledCourses.append(course)
                 scheduled = True
     if len(schedule["321"]) < 1 and scheduled == False:
         if time.find("spring") != -1 and time.find("even") == -1:
@@ -121,6 +125,7 @@ def planIndividualCourse(course):
                     break
             if eligible:
                 schedule["321"].append(course)
+                scheduledCourses.append(course)
                 scheduled = True
     if len(schedule["121"]) < 1 and scheduled == False:
         if time.find("fall") != -1 and time.find("even") == -1:
@@ -131,6 +136,7 @@ def planIndividualCourse(course):
                     break
             if eligible:
                 schedule["121"].append(course)
+                scheduledCourses.append(course)
                 scheduled = True
     if len(schedule["222"]) < 1 and scheduled == False:
         if time.find("jan") != -1 and time.find("odd") == -1:
@@ -141,6 +147,7 @@ def planIndividualCourse(course):
                     break
             if eligible:
                 schedule["222"].append(course)
+                scheduledCourses.append(course)
                 scheduled = True
     if len(schedule["322"]) < 1 and scheduled == False:
         if time.find("fall") != -1 and time.find("odd") == -1:
@@ -151,6 +158,7 @@ def planIndividualCourse(course):
                     break
             if eligible:
                 schedule["322"].append(course)
+                scheduledCourses.append(course)
                 scheduled = True
     if len(schedule["122"]) < 1 and scheduled == False:
         if time.find("fall") != -1 and time.find("odd") == -1:
@@ -161,6 +169,7 @@ def planIndividualCourse(course):
                     break
             if eligible:
                 schedule["122"].append(course)
+                scheduledCourses.append(course)
                 scheduled = True
     if len(schedule["223"]) < 1 and scheduled == False:
         if time.find("fall") != -1 and time.find("odd") == -1:
@@ -171,6 +180,7 @@ def planIndividualCourse(course):
                     break
             if eligible:
                 schedule["223"].append(course)
+                scheduledCourses.append(course)
                 scheduled = True
     if len(schedule["323"]) < 1 and scheduled == False:
         if time.find("fall") != -1 and time.find("odd") == -1:
@@ -181,6 +191,7 @@ def planIndividualCourse(course):
                     break
             if eligible:
                 schedule["323"].append(course)
+                scheduledCourses.append(course)
                 scheduled = True
 
     if not scheduled:
@@ -195,7 +206,7 @@ def planGroupCourse(course):
     i = 1
     count = 0
     while i < len(course):
-        if course[i] in plannedCourses:
+        if course[i] in scheduledCourses:
             count += 1
         if count >= numOfCourses:
             shouldPlan = False
