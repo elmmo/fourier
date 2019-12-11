@@ -23,6 +23,7 @@ schedule = {
 
 plannedCourses = []
 
+# This function parses the constraints for a course and splits them into time constraints and prerequisites
 def getConstraints(course):
     time = "none"
     prerequisites = []
@@ -49,7 +50,9 @@ def getConstraints(course):
             i += 1
     return time, prerequisites
 
+# This function looks at the constraints for each course and tries to fit it in the schedule
 def planIndividualCourse(course):
+    # From the course's constraints we pull out the semesters that the course can be taken and the course's prerequisites
     time = "none"
     prerequisites = []
     constraints = getConstraints(course)
@@ -59,7 +62,9 @@ def planIndividualCourse(course):
     prerequisites = constraints[1]
     scheduled = False
 
-
+    # For each semester we look at if the course can be taken that semester based on time constraints
+    # As well as if the course's prerequisites have already been taken
+    # If both of these requirements are met, the class is scheduled for this semester
     if len(schedule["119"]) < 3:
         if time.find("fall") != -1 and time.find("even") == -1:
             eligible = len(prerequisites) == 0
@@ -183,6 +188,7 @@ def planIndividualCourse(course):
         return False
     return True
     
+# When we get a "choose n courses" type, this function takes each course option and calls the planIndividualCourse function on it
 def planGroupCourse(course):
     numOfCourses = parseChoose(course)
     shouldPlan = True
@@ -204,14 +210,18 @@ def planGroupCourse(course):
             index += 1
         return count < numOfCourses
 
+# Directs each course to the method it should use for planning itself
 def plan(course):
+    # If it is a single course, send it to the function for planning individual courses
     if type(course) == type(""):
         if not planIndividualCourse(course):
             return False
+    # If it is a "choose n courses" type, send it to the function for planning group courses
     elif type(course) == type([]):
         planGroupCourse(course)
     return True
 
+# Recursive brute force function
 def bruteForce(courses):
     plan(courses[0])
     if len(courses) == 1:
