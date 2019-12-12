@@ -1,39 +1,6 @@
-import re
 from scrape import Degree, Department
-from utils import parseChoose
+from utils import parseChoose, getConstraints
 
-
-# This function parses the constraints for a course and splits them into time constraints and prerequisites
-def getConstraints(course):
-    time = "none"
-    prerequisites = []
-    standing = "none"
-    if course in degree.constraints:
-        for rule in degree.constraints[course]:
-            if rule.lower().find("semester") != -1 or rule.lower().find("term") != -1:
-                time = rule
-            elif rule.find("Prerequisite") != -1:
-                i = 0
-                while i < len(rule.split()):
-                    # Regex looks for three numbers in a row and makes sure the whole string doesn't contain a "+"
-                    # This handles the cases where an optional prerequisite is having a high enough SAT score
-                    # While also making sure to grab all course numbers
-                    # (?!.*\+)^ my look like an expletive, but it checks to see if anywhere in the string there is a "+"
-                    # [0-9][0-9][0-9] looks for 3 digits in sequence
-                    if re.search("(?!.*\+)^[0-9][0-9][0-9]", rule.split()[i]):
-                        prerequisites.append(rule.split()[i-1] + " " + rule.split()[i])
-                    i += 1
-            elif rule.lower().find("standing") != -1:
-                for word in rule.lower().split():
-                    if word == "freshman" or word == "sophomore" or word == "junior" or word == "senior":
-                        standing = word
-        i = 0
-        while i < len(prerequisites):
-            if prerequisites[i] not in degree.coursesByName or prerequisites[i].find("L") != -1:
-                del prerequisites[i]
-                i -= 1
-            i += 1
-    return time, prerequisites, standing
 
 # This function looks at the constraints for each course and tries to fit it in the schedule
 def planIndividualCourse(course):
@@ -53,7 +20,7 @@ def planIndividualCourse(course):
     # From the course's constraints we pull out the semesters that the course can be taken and the course's prerequisites
     time = "none"
     prerequisites = []
-    constraints = getConstraints(course)
+    constraints = getConstraints(course, degree)
     time = constraints[0].lower()
     if time == "none":
         time = "fall and spring semesters"
