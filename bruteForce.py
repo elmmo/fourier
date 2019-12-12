@@ -1,5 +1,4 @@
 import re
-import random
 from scrape import Degree, Department
 from utils import parseChoose
 
