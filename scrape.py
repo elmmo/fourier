@@ -132,7 +132,7 @@ class Department:
         i = 0
         while i < len(courses):
             courseNote = courses[i] if (type(courses[i]) == str) else courses[i][0]
-            if (courses[i].find("of the following") != -1 or courses[i].find("Recommended") != -1):
+            if (courseNote.find("of the following") != -1 or courseNote.find("Recommended") != -1):
                 j = i + 1
                 while j < len(courses):
                     if courses[j][0] == "(":
