@@ -1,27 +1,8 @@
 import re
+import random
 from scrape import Degree, Department
 from utils import parseChoose
 
-url = 'http://catalog.whitworth.edu/undergraduate/mathcomputerscience/#text'
-dept = Department(url)
-degree = dept.getDegree()
-
-schedule = {
-    "119": [],
-    "220": [],
-    "320": [],
-    "120": [],
-    "221": [],
-    "321": [],
-    "121": [],
-    "222": [],
-    "322": [],
-    "122": [],
-    "223": [],
-    "323": [],
-}
-
-scheduledCourses = []
 
 # This function parses the constraints for a course and splits them into time constraints and prerequisites
 def getConstraints(course):
@@ -242,15 +223,18 @@ def planIndividualCourse(course):
                     scheduled = True
 
     if not scheduled:
-        print("\nUnable to schedule " + course)
-        if (course in scheduledCourses):
-            print("Previously scheduled")
-        else:
-            print(prerequisites)
-            print(time)
-            print(flags)
+        if debug:
+            print("\nUnable to schedule " + course)
+        if debug:
+            if (course in scheduledCourses):
+                print("Previously scheduled")
+            else:
+                print(prerequisites)
+                print(time)
+                print(flags)
         return False
-    print("\nScheduled " + course)
+    if debug:
+        print("\nScheduled " + course)
     return True
     
 # When we get a "choose n courses" type, this function takes each course option and calls the planIndividualCourse function on it
@@ -279,6 +263,26 @@ def planGroupCourse(course):
             index += 1
         return count < numOfCourses
 
+# Duplicate all courses except recommended courses and move recommended courses to the end
+# Because of the defined order of the courses some classes weren't getting scheduled because their prerequisites were being scheduled after them
+# Now each course except recommended courses will try to be scheduled twice
+def duplicate(courses):
+    recommended = []
+    temp = []
+    i = 0
+    while i < len(courses):
+        if type(courses[i]) == type([]) and courses[i][0].find("Recommended") != -1:
+            recommended.append(courses[i])
+            del courses[i]
+        if i < len(courses):
+            temp.append(courses[i])
+        i += 1
+    for val in temp:
+        courses.append(val)
+    for val in recommended:
+        courses.append(val)
+    return courses
+
 # Directs each course to the method it should use for planning itself
 def plan(course):
     # If it is a single course, send it to the function for planning individual courses
@@ -296,8 +300,30 @@ def bruteForce(courses):
         plan(course)
 
 
+
 # MAIN
 
+url = 'http://catalog.whitworth.edu/undergraduate/mathcomputerscience/#text'
+dept = Department(url)
+degree = dept.getDegree()
+debug = True
+
+schedule = {
+    "119": [],
+    "220": [],
+    "320": [],
+    "120": [],
+    "221": [],
+    "321": [],
+    "121": [],
+    "222": [],
+    "322": [],
+    "122": [],
+    "223": [],
+    "323": [],
+}
+
+scheduledCourses = []
 
 # remove labels like "Core Courses"
 i = 0
@@ -307,24 +333,7 @@ while i < len(degree.courses):
         i -= 1
     i += 1
 
-# Duplicate all courses except recommended courses and move recommended courses to the end
-# Because of the defined order of the courses some classes weren't getting scheduled because their prerequisites were being scheduled after them
-# Now each course except recommended courses will try to be scheduled twice
-recommended = []
-temp = []
-i = 0
-while i < len(degree.courses):
-    if type(degree.courses[i]) == type([]) and degree.courses[i][0].find("Recommended") != -1:
-        recommended.append(degree.courses[i])
-        del degree.courses[i]
-    if i < len(degree.courses):
-        temp.append(degree.courses[i])
-    i += 1
-for val in temp:
-    degree.courses.append(val)
-for val in recommended:
-    degree.courses.append(val)
-
+degree.courses = duplicate(degree.courses)
 bruteForce(degree.courses)
 print("\n")
 for x in schedule:
