@@ -1,5 +1,7 @@
 from bs4 import BeautifulSoup
 import requests
+import re 
+from utils import Term, formatData, Standing, Alternation, Term
 
 # Degree Plan Key
 # index | Degree Option
@@ -69,19 +71,31 @@ class Department:
         for i in range(len(courses)):
             rows = courses[i].find_all('tr')
             titleParts = rows[0].get_text().split(" ")
+            title = "{} {}".format(titleParts[0], titleParts[1])
             descr = rows[1].get_text()
-            constraintIndex = descr.find('Prerequisite')
-            if (constraintIndex != -1):
-                title = "{} {}".format(titleParts[0], titleParts[1]) 
-                constraints.update({ title : descr[constraintIndex:] })
-        # split constraints values by "." separating them into prerequisites and semesters offered
-        for course in constraints:
-            constraints[course] = constraints[course].split(".")
-            for i in range(len(constraints[course])):
-                constraints[course][i] = constraints[course][i].strip()
-                if constraints[course][i] == "":
-                    del constraints[course][i]
-        return constraints
+            # search for prerequisites and corequisites 
+            prereqs = re.search(r'Prerequisite:(\s[\w,]*)*', descr)
+            parsedPrereqs = []
+            if (prereqs):
+                # put prereq marker at the front to signify constraint type
+                parsedPrereqs.append("Prerequisite")
+                # find all classes that are prereqs 
+                parsedPrereqs = re.findall(r'([A-Z]{1,4}\s\w{1,4})', prereqs.group(0)) 
+            # search for spring / fall / jan timing 
+            timesOffered = re.findall(r'jan|spring|fall', descr.lower())
+            if timesOffered != []: 
+                formatData(timesOffered, Term, "Time", parsedPrereqs)
+            # search for even / odd year timing 
+            timesOffered = re.findall(r'even|odd', descr.lower())
+            if timesOffered != []: 
+                formatData(timesOffered, Alternation, "Alternation", parsedPrereqs)
+            # search for class standing 
+            year = re.findall(r'freshman|sophomore|junior|senior', descr.lower())
+            if year != []: 
+                formatData(year, Standing, "Standing", parsedPrereqs)
+            if parsedPrereqs != []: 
+                constraints.update( { title : parsedPrereqs })
+        return constraints 
 
     # gets the table corresponding to the core courses
     def __getCoreCoursesTitle(self):
