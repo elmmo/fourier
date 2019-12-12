@@ -44,6 +44,7 @@ def getConstraints(course, degree):
                         standing = word
         i = 0
         while i < len(prerequisites):
+            prerequisites[i] = prerequisites[i].replace(",", "")
             if prerequisites[i] not in degree.coursesByName or prerequisites[i].find("L") != -1:
                 del prerequisites[i]
                 i -= 1
