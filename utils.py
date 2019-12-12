@@ -35,20 +35,18 @@ def formatData(data, category, name, originalArr):
 def parseChoose(course):
     if type(course) == str:
         return 1
-    numOfCourses = 0
     if course[0].lower().find("one") != -1:
-        numOfCourses = 1
+        return 1
     elif course[0].lower().find("two") != -1:
-        numOfCourses = 2
+        return 2 
     elif course[0].lower().find("three") != -1:
-        numOfCourses = 3
+        return 3 
     elif course[0].lower().find("four") != -1:
-        numOfCourses = 4
+        return 4 
     elif course[0].lower().find("five") != -1:
-        numOfCourses = 5
+        return 5 
     elif course[0].lower().find("six") != -1:
-        numOfCourses = 6
-    return numOfCourses
+        return 6 
 
 # This function parses the constraints for a course and splits them into time constraints and prerequisites
 def getConstraints(course, degree):
