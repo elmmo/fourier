@@ -101,145 +101,145 @@ def planIndividualCourse(course):
     # If both of these requirements are met, the class is scheduled for this semester
     if course not in scheduledCourses:
         if len(schedule["119"]) < 3 and (standing == "freshman" or standing == "none"):
-        if time.find("fall") != -1 and time.find("even") == -1:
-            eligible = len(prerequisites) == 0
+            if time.find("fall") != -1 and time.find("even") == -1:
+                eligible = len(prerequisites) == 0
                 flags["119"] = True
-            if eligible:
-                schedule["119"].append(course)
-                scheduledCourses.append(course)
-                scheduled = True
+                if eligible:
+                    schedule["119"].append(course)
+                    scheduledCourses.append(course)
+                    scheduled = True
         if len(schedule["220"]) < 1 and scheduled == False and (standing == "freshman" or standing == "none"):
-        if time.find("jan") != -1 and time.find("odd") == -1:
-            eligible = True
+            if time.find("jan") != -1 and time.find("odd") == -1:
+                eligible = True
                 flags["220"] = True
-            for prereq in prerequisites:
-                if prereq not in schedule["119"]:
-                    eligible = False
-                    break
-            if eligible:
-                schedule["220"].append(course)
-                scheduledCourses.append(course)
-                scheduled = True
+                for prereq in prerequisites:
+                    if prereq not in schedule["119"]:
+                        eligible = False
+                        break
+                if eligible:
+                    schedule["220"].append(course)
+                    scheduledCourses.append(course)
+                    scheduled = True
         if len(schedule["320"]) < 3 and scheduled == False and (standing == "freshman" or standing == "none"):
-        if time.find("spring") != -1 and time.find("odd") == -1:
-            eligible = True
+            if time.find("spring") != -1 and time.find("odd") == -1:
+                eligible = True
                 flags["320"] = True
-            for prereq in prerequisites:
-                if prereq not in schedule["119"] and prereq not in schedule["220"]:
-                    eligible = False
-                    break
-            if eligible:
-                schedule["320"].append(course)
-                scheduledCourses.append(course)
-                scheduled = True
+                for prereq in prerequisites:
+                    if prereq not in schedule["119"] and prereq not in schedule["220"]:
+                        eligible = False
+                        break
+                if eligible:
+                    schedule["320"].append(course)
+                    scheduledCourses.append(course)
+                    scheduled = True
         if len(schedule["120"]) < 3 and scheduled == False and (standing == "sophomore" or standing == "none"):
-        if time.find("fall") != -1 and time.find("odd") == -1:
-            eligible = True
+            if time.find("fall") != -1 and time.find("odd") == -1:
+                eligible = True
                 flags["120"] = True
-            for prereq in prerequisites:
-                if prereq not in schedule["119"] and prereq not in schedule["220"] and prereq not in schedule["320"]:
-                    eligible = False
-                    break
-            if eligible:
-                schedule["120"].append(course)
-                scheduledCourses.append(course)
-                scheduled = True
+                for prereq in prerequisites:
+                    if prereq not in schedule["119"] and prereq not in schedule["220"] and prereq not in schedule["320"]:
+                        eligible = False
+                        break
+                if eligible:
+                    schedule["120"].append(course)
+                    scheduledCourses.append(course)
+                    scheduled = True
         if len(schedule["221"]) < 1 and scheduled == False and (standing == "sophomore" or standing == "none"):
-        if time.find("jan") != -1 and time.find("even") == -1:
-            eligible = True
+            if time.find("jan") != -1 and time.find("even") == -1:
+                eligible = True
                 flags["221"] = True
-            for prereq in prerequisites:
-                if prereq not in schedule["119"] and prereq not in schedule["220"] and prereq not in schedule["320"] and prereq not in schedule["120"]:
-                    eligible = False
-                    break
-            if eligible:
-                schedule["221"].append(course)
-                scheduledCourses.append(course)
-                scheduled = True
+                for prereq in prerequisites:
+                    if prereq not in schedule["119"] and prereq not in schedule["220"] and prereq not in schedule["320"] and prereq not in schedule["120"]:
+                        eligible = False
+                        break
+                if eligible:
+                    schedule["221"].append(course)
+                    scheduledCourses.append(course)
+                    scheduled = True
         if len(schedule["321"]) < 3 and scheduled == False and (standing == "sophomore" or standing == "none"):
-        if time.find("spring") != -1 and time.find("even") == -1:
-            eligible = True
+            if time.find("spring") != -1 and time.find("even") == -1:
+                eligible = True
                 flags["321"] = True
-            for prereq in prerequisites:
-                if prereq not in schedule["119"] and prereq not in schedule["220"] and prereq not in schedule["320"] and prereq not in schedule["120"] and prereq not in schedule["221"]:
-                    eligible = False
-                    break
-            if eligible:
-                schedule["321"].append(course)
-                scheduledCourses.append(course)
-                scheduled = True
+                for prereq in prerequisites:
+                    if prereq not in schedule["119"] and prereq not in schedule["220"] and prereq not in schedule["320"] and prereq not in schedule["120"] and prereq not in schedule["221"]:
+                        eligible = False
+                        break
+                if eligible:
+                    schedule["321"].append(course)
+                    scheduledCourses.append(course)
+                    scheduled = True
         if len(schedule["121"]) < 3 and scheduled == False and (standing == "junior" or standing == "none"):
-        if time.find("fall") != -1 and time.find("even") == -1:
-            eligible = True
+            if time.find("fall") != -1 and time.find("even") == -1:
+                eligible = True
                 flags["121"] = True
-            for prereq in prerequisites:
-                if prereq not in schedule["119"] and prereq not in schedule["220"] and prereq not in schedule["320"] and prereq not in schedule["120"] and prereq not in schedule["221"] and prereq not in schedule["321"]:
-                    eligible = False
-                    break
-            if eligible:
-                schedule["121"].append(course)
-                scheduledCourses.append(course)
-                scheduled = True
+                for prereq in prerequisites:
+                    if prereq not in schedule["119"] and prereq not in schedule["220"] and prereq not in schedule["320"] and prereq not in schedule["120"] and prereq not in schedule["221"] and prereq not in schedule["321"]:
+                        eligible = False
+                        break
+                if eligible:
+                    schedule["121"].append(course)
+                    scheduledCourses.append(course)
+                    scheduled = True
         if len(schedule["222"]) < 1 and scheduled == False and (standing == "junior" or standing == "none"):
-        if time.find("jan") != -1 and time.find("odd") == -1:
-            eligible = True
+            if time.find("jan") != -1 and time.find("odd") == -1:
+                eligible = True
                 flags["222"] = True
-            for prereq in prerequisites:
-                if prereq not in schedule["119"] and prereq not in schedule["220"] and prereq not in schedule["320"] and prereq not in schedule["120"] and prereq not in schedule["221"] and prereq not in schedule["321"] and prereq not in schedule["121"]:
-                    eligible = False
-                    break
-            if eligible:
-                schedule["222"].append(course)
-                scheduledCourses.append(course)
-                scheduled = True
+                for prereq in prerequisites:
+                    if prereq not in schedule["119"] and prereq not in schedule["220"] and prereq not in schedule["320"] and prereq not in schedule["120"] and prereq not in schedule["221"] and prereq not in schedule["321"] and prereq not in schedule["121"]:
+                        eligible = False
+                        break
+                if eligible:
+                    schedule["222"].append(course)
+                    scheduledCourses.append(course)
+                    scheduled = True
         if len(schedule["322"]) < 3 and scheduled == False and (standing == "junior" or standing == "none"):
             if time.find("spring") != -1 and time.find("odd") == -1:
-            eligible = True
+                eligible = True
                 flags["322"] = True
-            for prereq in prerequisites:
-                if prereq not in schedule["119"] and prereq not in schedule["220"] and prereq not in schedule["320"] and prereq not in schedule["120"] and prereq not in schedule["221"] and prereq not in schedule["321"] and prereq not in schedule["121"] and prereq not in schedule["222"]:
-                    eligible = False
-                    break
-            if eligible:
-                schedule["322"].append(course)
-                scheduledCourses.append(course)
-                scheduled = True
+                for prereq in prerequisites:
+                    if prereq not in schedule["119"] and prereq not in schedule["220"] and prereq not in schedule["320"] and prereq not in schedule["120"] and prereq not in schedule["221"] and prereq not in schedule["321"] and prereq not in schedule["121"] and prereq not in schedule["222"]:
+                        eligible = False
+                        break
+                if eligible:
+                    schedule["322"].append(course)
+                    scheduledCourses.append(course)
+                    scheduled = True
         if len(schedule["122"]) < 3 and scheduled == False and (standing == "senior" or standing == "none"):
-        if time.find("fall") != -1 and time.find("odd") == -1:
-            eligible = True
+            if time.find("fall") != -1 and time.find("odd") == -1:
+                eligible = True
                 flags["122"] = True
-            for prereq in prerequisites:
-                if prereq not in schedule["119"] and prereq not in schedule["220"] and prereq not in schedule["320"] and prereq not in schedule["120"] and prereq not in schedule["221"] and prereq not in schedule["321"] and prereq not in schedule["121"] and prereq not in schedule["222"] and prereq not in schedule["322"]:
-                    eligible = False
-                    break
-            if eligible:
-                schedule["122"].append(course)
-                scheduledCourses.append(course)
-                scheduled = True
+                for prereq in prerequisites:
+                    if prereq not in schedule["119"] and prereq not in schedule["220"] and prereq not in schedule["320"] and prereq not in schedule["120"] and prereq not in schedule["221"] and prereq not in schedule["321"] and prereq not in schedule["121"] and prereq not in schedule["222"] and prereq not in schedule["322"]:
+                        eligible = False
+                        break
+                if eligible:
+                    schedule["122"].append(course)
+                    scheduledCourses.append(course)
+                    scheduled = True
         if len(schedule["223"]) < 1 and scheduled == False and (standing == "senior" or standing == "none"):
             if time.find("jan") != -1 and time.find("odd") == -1:
-            eligible = True
+                eligible = True
                 flags["223"] = True
-            for prereq in prerequisites:
-                if prereq not in schedule["119"] and prereq not in schedule["220"] and prereq not in schedule["320"] and prereq not in schedule["120"] and prereq not in schedule["221"] and prereq not in schedule["321"] and prereq not in schedule["121"] and prereq not in schedule["222"] and prereq not in schedule["322"] and prereq not in schedule["122"]:
-                    eligible = False
-                    break
-            if eligible:
-                schedule["223"].append(course)
-                scheduledCourses.append(course)
-                scheduled = True
+                for prereq in prerequisites:
+                    if prereq not in schedule["119"] and prereq not in schedule["220"] and prereq not in schedule["320"] and prereq not in schedule["120"] and prereq not in schedule["221"] and prereq not in schedule["321"] and prereq not in schedule["121"] and prereq not in schedule["222"] and prereq not in schedule["322"] and prereq not in schedule["122"]:
+                        eligible = False
+                        break
+                if eligible:
+                    schedule["223"].append(course)
+                    scheduledCourses.append(course)
+                    scheduled = True
         if len(schedule["323"]) < 3 and scheduled == False and (standing == "senior" or standing == "none"):
             if time.find("spring") != -1 and time.find("odd") == -1:
-            eligible = True
+                eligible = True
                 flags["323"] = True
-            for prereq in prerequisites:
-                if prereq not in schedule["119"] and prereq not in schedule["220"] and prereq not in schedule["320"] and prereq not in schedule["120"] and prereq not in schedule["221"] and prereq not in schedule["321"] and prereq not in schedule["121"] and prereq not in schedule["222"] and prereq not in schedule["322"] and prereq not in schedule["122"] and prereq not in schedule["223"]:
-                    eligible = False
-                    break
-            if eligible:
-                schedule["323"].append(course)
-                scheduledCourses.append(course)
-                scheduled = True
+                for prereq in prerequisites:
+                    if prereq not in schedule["119"] and prereq not in schedule["220"] and prereq not in schedule["320"] and prereq not in schedule["120"] and prereq not in schedule["221"] and prereq not in schedule["321"] and prereq not in schedule["121"] and prereq not in schedule["222"] and prereq not in schedule["322"] and prereq not in schedule["122"] and prereq not in schedule["223"]:
+                        eligible = False
+                        break
+                if eligible:
+                    schedule["323"].append(course)
+                    scheduledCourses.append(course)
+                    scheduled = True
 
     if not scheduled:
         print("\nUnable to schedule " + course)
@@ -261,13 +261,13 @@ def planGroupCourse(course):
     i = 1
     count = 0
     if course[0].lower().find("recommend") == -1:
-    while i < len(course):
-        if course[i] in scheduledCourses:
-            count += 1
-        if count >= numOfCourses:
-            shouldPlan = False
-            return True
-        i += 1
+        while i < len(course):
+            if course[i] in scheduledCourses:
+                count += 1
+            if count >= numOfCourses:
+                shouldPlan = False
+                return True
+            i += 1
     else:
         numOfCourses = len(course)-1
     if shouldPlan:
@@ -292,10 +292,12 @@ def plan(course):
 
 # Recursive brute force function
 def bruteForce(courses):
-    plan(courses[0])
-    if len(courses) == 1:
-        return 0
-    return bruteForce(courses[1:])
+    for course in courses:
+        plan(course)
+
+
+# MAIN
+
 
 # remove labels like "Core Courses"
 i = 0
