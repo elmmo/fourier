@@ -26,7 +26,6 @@ def planIndividualCourse(course):
         time = "fall and spring semesters"
     prerequisites = constraints[1]
     standing = constraints[2]
-    scheduled = False
 
     flags = {
         "119": False,
@@ -43,6 +42,8 @@ def planIndividualCourse(course):
         "323": False,
     }
 
+    semester = ""
+
     # For each semester we look at if the course can be taken that semester based on time constraints
     # As well as if the course's prerequisites have already been taken
     # If both of these requirements are met, the class is scheduled for this semester
@@ -52,10 +53,8 @@ def planIndividualCourse(course):
                 eligible = len(prerequisites) == 0
                 flags["119"] = True
                 if eligible:
-                    schedule["119"].append(course)
-                    scheduledCourses.append(course)
-                    scheduled = True
-        if len(schedule["220"]) < 1 and scheduled == False and (standing == "freshman" or standing == "none"):
+                    semester = "119"
+        if len(schedule["220"]) < 1 and semester == "" and (standing == "freshman" or standing == "none"):
             if time.find("jan") != -1 and time.find("odd") == -1:
                 eligible = True
                 flags["220"] = True
@@ -64,10 +63,8 @@ def planIndividualCourse(course):
                         eligible = False
                         break
                 if eligible:
-                    schedule["220"].append(course)
-                    scheduledCourses.append(course)
-                    scheduled = True
-        if len(schedule["320"]) < 3 and scheduled == False and (standing == "freshman" or standing == "none"):
+                    semester = "220"
+        if len(schedule["320"]) < 3 and semester == "" and (standing == "freshman" or standing == "none"):
             if time.find("spring") != -1 and time.find("odd") == -1:
                 eligible = True
                 flags["320"] = True
@@ -76,10 +73,8 @@ def planIndividualCourse(course):
                         eligible = False
                         break
                 if eligible:
-                    schedule["320"].append(course)
-                    scheduledCourses.append(course)
-                    scheduled = True
-        if len(schedule["120"]) < 3 and scheduled == False and (standing == "sophomore" or standing == "none"):
+                    semester = "320"
+        if len(schedule["120"]) < 3 and semester == "" and (standing == "sophomore" or standing == "none"):
             if time.find("fall") != -1 and time.find("odd") == -1:
                 eligible = True
                 flags["120"] = True
@@ -88,10 +83,8 @@ def planIndividualCourse(course):
                         eligible = False
                         break
                 if eligible:
-                    schedule["120"].append(course)
-                    scheduledCourses.append(course)
-                    scheduled = True
-        if len(schedule["221"]) < 1 and scheduled == False and (standing == "sophomore" or standing == "none"):
+                    semester = "120"
+        if len(schedule["221"]) < 1 and semester == "" and (standing == "sophomore" or standing == "none"):
             if time.find("jan") != -1 and time.find("even") == -1:
                 eligible = True
                 flags["221"] = True
@@ -100,10 +93,8 @@ def planIndividualCourse(course):
                         eligible = False
                         break
                 if eligible:
-                    schedule["221"].append(course)
-                    scheduledCourses.append(course)
-                    scheduled = True
-        if len(schedule["321"]) < 3 and scheduled == False and (standing == "sophomore" or standing == "none"):
+                    semester = "221"
+        if len(schedule["321"]) < 3 and semester == "" and (standing == "sophomore" or standing == "none"):
             if time.find("spring") != -1 and time.find("even") == -1:
                 eligible = True
                 flags["321"] = True
@@ -112,10 +103,8 @@ def planIndividualCourse(course):
                         eligible = False
                         break
                 if eligible:
-                    schedule["321"].append(course)
-                    scheduledCourses.append(course)
-                    scheduled = True
-        if len(schedule["121"]) < 3 and scheduled == False and (standing == "junior" or standing == "none"):
+                    semester = "321"
+        if len(schedule["121"]) < 3 and semester == "" and (standing == "junior" or standing == "none"):
             if time.find("fall") != -1 and time.find("even") == -1:
                 eligible = True
                 flags["121"] = True
@@ -124,10 +113,8 @@ def planIndividualCourse(course):
                         eligible = False
                         break
                 if eligible:
-                    schedule["121"].append(course)
-                    scheduledCourses.append(course)
-                    scheduled = True
-        if len(schedule["222"]) < 1 and scheduled == False and (standing == "junior" or standing == "none"):
+                    semester = "121"
+        if len(schedule["222"]) < 1 and semester == "" and (standing == "junior" or standing == "none"):
             if time.find("jan") != -1 and time.find("odd") == -1:
                 eligible = True
                 flags["222"] = True
@@ -136,10 +123,8 @@ def planIndividualCourse(course):
                         eligible = False
                         break
                 if eligible:
-                    schedule["222"].append(course)
-                    scheduledCourses.append(course)
-                    scheduled = True
-        if len(schedule["322"]) < 3 and scheduled == False and (standing == "junior" or standing == "none"):
+                    semester = "222"
+        if len(schedule["322"]) < 3 and semester == "" and (standing == "junior" or standing == "none"):
             if time.find("spring") != -1 and time.find("odd") == -1:
                 eligible = True
                 flags["322"] = True
@@ -148,10 +133,8 @@ def planIndividualCourse(course):
                         eligible = False
                         break
                 if eligible:
-                    schedule["322"].append(course)
-                    scheduledCourses.append(course)
-                    scheduled = True
-        if len(schedule["122"]) < 3 and scheduled == False and (standing == "senior" or standing == "none"):
+                    semester = "322"
+        if len(schedule["122"]) < 3 and semester == "" and (standing == "senior" or standing == "none"):
             if time.find("fall") != -1 and time.find("odd") == -1:
                 eligible = True
                 flags["122"] = True
@@ -160,10 +143,8 @@ def planIndividualCourse(course):
                         eligible = False
                         break
                 if eligible:
-                    schedule["122"].append(course)
-                    scheduledCourses.append(course)
-                    scheduled = True
-        if len(schedule["223"]) < 1 and scheduled == False and (standing == "senior" or standing == "none"):
+                    semester = "122"
+        if len(schedule["223"]) < 1 and semester == "" and (standing == "senior" or standing == "none"):
             if time.find("jan") != -1 and time.find("odd") == -1:
                 eligible = True
                 flags["223"] = True
@@ -172,10 +153,8 @@ def planIndividualCourse(course):
                         eligible = False
                         break
                 if eligible:
-                    schedule["223"].append(course)
-                    scheduledCourses.append(course)
-                    scheduled = True
-        if len(schedule["323"]) < 3 and scheduled == False and (standing == "senior" or standing == "none"):
+                    semester = "223"
+        if len(schedule["323"]) < 3 and semester == "" and (standing == "senior" or standing == "none"):
             if time.find("spring") != -1 and time.find("odd") == -1:
                 eligible = True
                 flags["323"] = True
@@ -184,11 +163,9 @@ def planIndividualCourse(course):
                         eligible = False
                         break
                 if eligible:
-                    schedule["323"].append(course)
-                    scheduledCourses.append(course)
-                    scheduled = True
+                    semester = "323"
 
-    if not scheduled:
+    if semester == "":
         if debug:
             print("\nUnable to schedule " + course)
         if debug:
@@ -199,8 +176,11 @@ def planIndividualCourse(course):
                 print(time)
                 print(flags)
         return False
-    if debug:
-        print("\nScheduled " + course)
+    else:
+        if debug:
+            print("\nScheduled " + course)
+        schedule[semester].append(course)
+        scheduledCourses.append(course)
     return True
     
 # When we get a "choose n courses" type, this function takes each course option and calls the planIndividualCourse function on it
@@ -260,7 +240,7 @@ def plan(course):
         planGroupCourse(course)
     return True
 
-# Recursive brute force function
+# Iterative brute force function
 def bruteForce(courses):
     for course in courses:
         plan(course)
