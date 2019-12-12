@@ -131,7 +131,8 @@ class Department:
         # So it is easier to access which classes are under which requirements
         i = 0
         while i < len(courses):
-            if courses[i].find("of the following") != -1:
+            courseNote = courses[i] if (type(courses[i]) == str) else courses[i][0]
+            if courseNote.find("of the following") != -1:
                 j = i + 1
                 while j < len(courses):
                     if len(courses[j]) > 12:
