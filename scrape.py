@@ -132,10 +132,13 @@ class Department:
         i = 0
         while i < len(courses):
             courseNote = courses[i] if (type(courses[i]) == str) else courses[i][0]
-            if courseNote.find("of the following") != -1:
+            if (courses[i].find("of the following") != -1 or courses[i].find("Recommended") != -1):
                 j = i + 1
                 while j < len(courses):
-                    if len(courses[j]) > 12:
+                    if courses[j][0] == "(":
+                        del courses[j]
+                        j -= 1
+                    elif len(courses[j]) > 11:
                         break
                     else:
                         if type(courses[i]) == type([]):
@@ -147,7 +150,6 @@ class Department:
                 while k < len(courses[i])-1:
                     del courses[i+1]
                     k += 1
-
             i += 1
         return courses, coursesByName
 
