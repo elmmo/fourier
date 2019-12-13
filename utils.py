@@ -54,11 +54,13 @@ def getConstraints(course, degree):
 
 def createAssociation(degree):
     association = {}
-    i = 1
+    groups = []
+    i = 0
     for course in degree.courses:
         if type(course) == type(""):
             association[course] = getConstraints(course, degree)[1]
         else:
+            groups.append(course)
             association[i] = []
             for option in course:
                 for prereq in getConstraints(option, degree)[1]:
@@ -66,7 +68,7 @@ def createAssociation(degree):
             association[i] = list(set(association[i]))
             i += 1
     for node in association:
-        i = 1
+        i = 0
         for course in degree.courses:
             if type(course) == type([]):
                 for option in course:
@@ -79,16 +81,23 @@ def createAssociation(degree):
         for edge in association[node]:
             if edge == node:
                 association[node].remove(edge)
-    return association    
+    return association, groups
 
 # This is a depth first search that orders on popped as opposed to on visited
 def TopologicalSort(association):
     popped = []
-    stack = []
     for node in association:
-        for edge in association[node]:
-            if edge not in popped:
-                TopologicalSort(association)
+        popped = DFS(association, node, popped)
+    return popped
+
+def DFS(association, node, popped):
+    if association[node] == [] and node not in popped:
         popped.append(node)
-    popped.reverse()
+    for edge in association[node]:
+        if association[edge] != []:
+            DFS(association, edge, popped)
+        elif edge not in popped:
+            popped.append(edge)
+    if node not in popped:
+        popped.append(node)
     return popped
