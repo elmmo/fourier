@@ -1,17 +1,11 @@
 import re
 from enum import Enum 
 
-class Standing(Enum): 
-    freshman = 1 
-    sophomore = 2 
-    junior = 3
-    senior = 4
-
 class Term(Enum): 
-    fall = 1 
-    jan = 2 
+    fall = 1
+    jan = 2   
     spring = 3
-
+ 
 class Alternation(Enum):
     even = 1 
     odd = 2
@@ -24,12 +18,14 @@ def formatData(data, category, name, originalArr):
     index = 0
     # put marker at the start to signify constraint type
     originalArr.append(name)
+    reqs = []
     for option in category: 
         if option.name in data: 
-            originalArr.append(option.value)
+            reqs.append(option.value)
             index += 1
             if index >= len(data): 
                 break 
+    originalArr.append(reqs)
     return originalArr
 
 def parseChoose(course):

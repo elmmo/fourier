@@ -76,11 +76,11 @@ class Department:
             # search for prerequisites and corequisites 
             prereqs = re.search(r'Prerequisite:(\s[\w,]*)*', descr)
             parsedPrereqs = []
-            if (prereqs):
+            if (prereqs != None):
                 # put prereq marker at the front to signify constraint type
                 parsedPrereqs.append("Prerequisite")
                 # find all classes that are prereqs 
-                parsedPrereqs = re.findall(r'([A-Z]{1,4}\s\w{1,4})', prereqs.group(0)) 
+                parsedPrereqs.append(re.findall(r'([A-Z]{1,4}\s\w{1,4})', prereqs.group(0))) 
             # search for spring / fall / jan timing 
             timesOffered = re.findall(r'jan|spring|fall', descr.lower())
             if timesOffered != []: 
@@ -172,7 +172,7 @@ degree = dept.getDegree()
 print(degree.title)
 # print("\nCourses By Name:")
 # print(degree.coursesByName)
-print("\nCourses:")
-print(degree.courses)
+# print("\nCourses:")
+# print(degree.courses)
 print("\nConstraints:")
 print(degree.constraints)
