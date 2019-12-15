@@ -1,21 +1,16 @@
+import timeit
+
+def test(): 
+    SETUP_CODE = '''
 from scrape import Department
 from utils import parseChoose, Term
 from math import floor
 import random
 
-url = 'http://catalog.whitworth.edu/undergraduate/mathcomputerscience/#text'
-dept = Department(url)
-degree = dept.getDegree()
-
-plot = []
-costs = {}
-            
 # creates an adjacency matrix based off of the 
 def createMatrix(constraints, verbose):
     # create matrix of zeros, according to the number of classes there are to be plot 
     matrix = [[0 for col in range(len(constraints))] for row in range(len(constraints))]
-    if verbose: 
-        print("Creating adjacency matrix...")
     for course in constraints:
         if "Prerequisite" in constraints[course]:
             prereqStart = constraints[course].index("Prerequisite")
@@ -26,8 +21,6 @@ def createMatrix(constraints, verbose):
                 if verbose: 
                     print("Plotting: Course {} with the prereq {}".format(course, prereqs[i]))
         plot.append(course)
-    if verbose: 
-        print("Returning adjacency matrix.")
     return matrix
 
 # takes in a matrix and performs transitive closure on it using Warshall's Algorithm
@@ -42,8 +35,6 @@ def transitiveClosure(mtx, verbose):
                     if verbose: 
                         print("Found: {} is a prereq for {}".format(plot[i], plot[j]))
                     matrix[i][j] = 1
-    if verbose: 
-        print("Transitive closure complete.\n")
 
 
 # chooses the classes that will be put in the fourier plan 
@@ -117,10 +108,19 @@ def getPathLength(course, mtx, verbose):
         print("The cost to get to {} is {}".format(course, costs[course]))
     return costs[course]
 
-print("\nPROGRAM RUNNING")
+url = 'http://catalog.whitworth.edu/undergraduate/mathcomputerscience/#text'
+dept = Department(url)
+degree = dept.getDegree()
+plot = []
 matrix = createMatrix(degree.constraints, False)
+'''
+
+    TEST_CODE = ''' 
+costs = {}
 transitiveClosure(matrix, False)
-coursePlan = createCoursePlan(degree.courses, degree.constraints, matrix, True)
-print(coursePlan)
+coursePlan = createCoursePlan(degree.courses, degree.constraints, matrix, False)
+'''
 
+    print(timeit.timeit(setup = SETUP_CODE, stmt = TEST_CODE, number = 100))
 
+test()

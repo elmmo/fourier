@@ -3,25 +3,25 @@ import requests
 import re 
 from utils import Term, formatData, Alternation, Term
 
-# Degree Plan Key
-# index | Degree Option
-# ------|----------------------------------------
-#   0   | Mathematics - General Major, B.A.
-#   1   | Mathematics - Education Major, B.A.
-#   2   | Mathematics Major, B.S.
-#   3   | Mathematical Economics Major, B.A.
-#   4   | Computer Science Core Courses
-#   5   | International Project Management Option
-#   6   | Business Option
-#   7   | Network Systems Option
-#   8   | Computer Science Major, B.S.
-#   9   | Bioinformatics Major, B.S.
-#  10   | Human-Computer Interaction Major, B.A.
-#  11   | Mathematics Minor
-#  12   | Mathematics Minor
-#  13   | Computer Science Minor
-#  14   | Information Technology Minor
-
+def printDegreeKey(): 
+    print("Degree Plan Key")
+    print("index | Degree Option")
+    print("------|----------------------------------------")
+    print("  0   | Mathematics - General Major, B.A.")
+    print("  1   | Mathematics - Education Major, B.A.")
+    print("  2   | Mathematics Major, B.S.")
+    print("  3   | Mathematical Economics Major, B.A.")
+    print("  4   | Computer Science Core Courses")
+    print("  5   | International Project Management Option")
+    print("  6   | Business Option")
+    print("  7   | Network Systems Option")
+    print("  8   | Computer Science Major, B.S.")
+    print("  9   | Bioinformatics Major, B.S.")
+    print("  10  | Human-Computer Interaction Major, B.A.")
+    print("  11  | Mathematics Minor")
+    print("  12  | Computer Science Minor")
+    print("  13  | Information Technology Minor")
+    
 class Degree: 
     def __init__(self, title, courses, coursesByName, constraints): 
         self.title = title
@@ -40,9 +40,14 @@ class Department:
         self.majorsClasses = self.soup.find_all(class_='sc_courselist')
 
     # will ask for user input that will search for and specify the correct degree plan 
-    def getDegree(self): 
-        print("Implement later: ask for degree name and look up degree by name")
-        degree = self.majorsClasses[8] # Change the index here to change the degree plan according to the key above
+    def getDegree(self, degIndex = -1): 
+        printDegreeKey(); 
+        if degIndex == -1:
+            choice = input("Which degree would you like to create a list of requirements for? ")
+            choice = int(choice.strip())
+        else: 
+            choice = degIndex
+        degree = self.majorsClasses[choice] # Change the index here to change the degree plan according to the key above
         courses = []
         coursesByName = {}
         self.__parseCourseRequirements(degree, courses, coursesByName)
@@ -159,15 +164,3 @@ class Department:
 
             i += 1
         return courses, coursesByName
-
-url = 'http://catalog.whitworth.edu/undergraduate/mathcomputerscience/#text'
-dept = Department(url)
-degree = dept.getDegree()
-
-print(degree.title)
-# print("\nCourses By Name:")
-# print(degree.coursesByName)
-# print("\nCourses:")
-# print(degree.courses)
-print("\nConstraints:")
-print(degree.constraints)
