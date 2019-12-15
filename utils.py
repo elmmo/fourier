@@ -1,50 +1,22 @@
 import re
-from enum import Enum 
-
-class Term(Enum): 
-    fall = 1
-    jan = 2   
-    spring = 3
- 
-class Alternation(Enum):
-    even = 1 
-    odd = 2
-
-# data: the list you wish to parse 
-# category: the enum you're comparing against 
-# name: name of the prereq type being added 
-# originalArr: array to add to
-def formatData(data, category, name, originalArr): 
-    index = 0
-    # put marker at the start to signify constraint type
-    originalArr.append(name)
-    reqs = []
-    for option in category: 
-        if option.name in data: 
-            reqs.append(option.value)
-            index += 1
-            if index >= len(data): 
-                break 
-    originalArr.append(reqs)
-    return originalArr
 
 def parseChoose(course):
     if type(course) == type("") or course[0].lower().find("recommended") != -1:
         return -1000
-    elif course[0].lower().find("one") != -1:
-        return 1
-    elif course[0].lower().find("two") != -1:
-        return 2 
-    elif course[0].lower().find("three") != -1:
-        return 3 
-    elif course[0].lower().find("four") != -1:
-        return 4 
-    elif course[0].lower().find("five") != -1:
-        return 5 
-    elif course[0].lower().find("six") != -1:
-        return 6 
-    else: 
-        return -1 
+    numOfCourses = -1
+    if course[0].lower().find("one") != -1 or course[0].find("1") != -1:
+        numOfCourses = 1
+    elif course[0].lower().find("two") != -1 or course[0].find("2") != -1:
+        numOfCourses = 2
+    elif course[0].lower().find("three") != -1 or course[0].find("3") != -1:
+        numOfCourses = 3
+    elif course[0].lower().find("four") != -1 or course[0].find("4") != -1:
+        numOfCourses = 4
+    elif course[0].lower().find("five") != -1 or course[0].find("5") != -1:
+        numOfCourses = 5
+    elif course[0].lower().find("six") != -1 or course[0].find("6") != -1:
+        numOfCourses = 6
+    return numOfCourses
 
 # This function parses the constraints for a course and splits them into time constraints and prerequisites
 def getConstraints(course, degree):

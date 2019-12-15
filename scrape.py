@@ -1,27 +1,25 @@
 from bs4 import BeautifulSoup
 import requests
-import re 
-from utils import Term, formatData, Alternation, Term
 
-def printDegreeKey(): 
-    print("Degree Plan Key")
-    print("index | Degree Option")
-    print("------|----------------------------------------")
-    print("  0   | Mathematics - General Major, B.A.")
-    print("  1   | Mathematics - Education Major, B.A.")
-    print("  2   | Mathematics Major, B.S.")
-    print("  3   | Mathematical Economics Major, B.A.")
-    print("  4   | Computer Science Core Courses")
-    print("  5   | International Project Management Option")
-    print("  6   | Business Option")
-    print("  7   | Network Systems Option")
-    print("  8   | Computer Science Major, B.S.")
-    print("  9   | Bioinformatics Major, B.S.")
-    print("  10  | Human-Computer Interaction Major, B.A.")
-    print("  11  | Mathematics Minor")
-    print("  12  | Computer Science Minor")
-    print("  13  | Information Technology Minor")
-    
+# Degree Plan Key
+# index | Degree Option
+# ------|----------------------------------------
+#   0   | Mathematics - General Major, B.A.
+#   1   | Mathematics - Education Major, B.A.
+#   2   | Mathematics Major, B.S.
+#   3   | Mathematical Economics Major, B.A.
+#   4   | Computer Science Core Courses
+#   5   | International Project Management Option
+#   6   | Business Option
+#   7   | Network Systems Option
+#   8   | Computer Science Major, B.S.
+#   9   | Bioinformatics Major, B.S.
+#  10   | Human-Computer Interaction Major, B.A.
+#  11   | Mathematics Minor
+#  12   | Mathematics Minor
+#  13   | Computer Science Minor
+#  14   | Information Technology Minor
+
 class Degree: 
     def __init__(self, title, courses, coursesByName, constraints): 
         self.title = title
@@ -40,14 +38,11 @@ class Department:
         self.majorsClasses = self.soup.find_all(class_='sc_courselist')
 
     # will ask for user input that will search for and specify the correct degree plan 
-    def getDegree(self, degIndex = -1): 
-        printDegreeKey(); 
-        if degIndex == -1:
-            choice = input("Which degree would you like to create a list of requirements for? ")
-            choice = int(choice.strip())
-        else: 
-            choice = degIndex
-        degree = self.majorsClasses[choice] # Change the index here to change the degree plan according to the key above
+    def getDegree(self): 
+        print("Implement later: ask for degree name and look up degree by name")
+        # for i in range(len(self.optionsByTitle)):
+        #     print(self.optionsByTitle[i].get_text())
+        degree = self.majorsClasses[8] # Change the index here to change the degree plan according to the key above
         courses = []
         coursesByName = {}
         self.__parseCourseRequirements(degree, courses, coursesByName)
@@ -74,27 +69,19 @@ class Department:
         for i in range(len(courses)):
             rows = courses[i].find_all('tr')
             titleParts = rows[0].get_text().split(" ")
-            title = "{} {}".format(titleParts[0], titleParts[1])
             descr = rows[1].get_text()
-            # search for prerequisites and corequisites 
-            prereqs = re.search(r'Prerequisite:(\s[\w,]*)*', descr)
-            parsedPrereqs = []
-            if (prereqs != None):
-                # put prereq marker at the front to signify constraint type
-                parsedPrereqs.append("Prerequisite")
-                # find all classes that are prereqs 
-                parsedPrereqs.append(re.findall(r'([A-Z]{1,4}\s\w{1,4})', prereqs.group(0))) 
-            # search for spring / fall / jan timing 
-            timesOffered = re.findall(r'jan|spring|fall', descr.lower())
-            if timesOffered != []: 
-                formatData(timesOffered, Term, "Time", parsedPrereqs)
-            # search for even / odd year timing 
-            timesOffered = re.findall(r'even|odd', descr.lower())
-            if timesOffered != []: 
-                formatData(timesOffered, Alternation, "Alternation", parsedPrereqs)
-            if parsedPrereqs != []: 
-                constraints.update( { title : parsedPrereqs })
-        return constraints 
+            constraintIndex = descr.find('Prerequisite')
+            if (constraintIndex != -1):
+                title = "{} {}".format(titleParts[0], titleParts[1]) 
+                constraints.update({ title : descr[constraintIndex:] })
+        # split constraints values by "." separating them into prerequisites and semesters offered
+        for course in constraints:
+            constraints[course] = constraints[course].split(".")
+            for i in range(len(constraints[course])):
+                constraints[course][i] = constraints[course][i].strip()
+                if constraints[course][i] == "":
+                    del constraints[course][i]
+        return constraints
 
     # gets the table corresponding to the core courses
     def __getCoreCoursesTitle(self):
@@ -150,7 +137,7 @@ class Department:
                     if courses[j][0] == "(":
                         del courses[j]
                         j -= 1
-                    elif len(courses[j]) > 12:
+                    elif len(courses[j]) > 11:
                         break
                     else:
                         if type(courses[i]) == type([]):
@@ -184,3 +171,15 @@ class Department:
 
         #     i += 1
         return courses, coursesByName
+
+url = 'http://catalog.whitworth.edu/undergraduate/mathcomputerscience/#text'
+dept = Department(url)
+degree = dept.getDegree()
+
+print(degree.title)
+print("\nCourses By Name:")
+print(degree.coursesByName)
+print("\nCourses:")
+print(degree.courses)
+print("\nConstraints:")
+print(degree.constraints)
