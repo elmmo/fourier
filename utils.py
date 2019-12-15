@@ -29,8 +29,6 @@ def formatData(data, category, name, originalArr):
     return originalArr
 
 def parseChoose(course):
-    if type(course) == str:
-        return 1
     if course[0].lower().find("one") != -1:
         return 1
     elif course[0].lower().find("two") != -1:
@@ -43,6 +41,8 @@ def parseChoose(course):
         return 5 
     elif course[0].lower().find("six") != -1:
         return 6 
+    else: 
+        return -1 
 
 # This function parses the constraints for a course and splits them into time constraints and prerequisites
 def getConstraints(course, degree):

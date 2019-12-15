@@ -1,118 +1,123 @@
 from scrape import Department
 from utils import parseChoose, Term
 from math import floor
+import random
 
 url = 'http://catalog.whitworth.edu/undergraduate/mathcomputerscience/#text'
 dept = Department(url)
 degree = dept.getDegree()
 
-fullyPlanned = set()
-baseYear = 19
-
-def createCoursePlan(reqs, originalArr, chooseInt = -1): 
-    chosen = 0
-    for x in range(len(reqs)):
-        if type(reqs[x]) == str and reqs[x] in degree.coursesByName: 
-            # if adding in courses that are always required 
-            if chooseInt == -1: 
-                originalArr[reqs[x]] = 0
-            # if iterating through a sub-list, will take the first x courses, bounded by chooseInt
-            elif chosen < chooseInt: 
-                originalArr[reqs[x]] = 0 
-                chosen += 1
-        elif type(reqs[x]) == list: 
-            choose = parseChoose(reqs[x][0])
-            createCoursePlan(reqs[x],originalArr,choose)
-
-def topDownDP(): 
-    # generate list of courses an user must take 
-    courseList = {}
-    createCoursePlan(degree.courses, courseList)
-    print(courseList)
-    # recursively add classes 
-    planClass('CS171', courseList)
-
-
-# def planClasses()
-#     if courseList[0] in degree.constraints: 
-#         classConstraints = degree.constraints[courseList[0]]
-#         preReqStart = 1
-#         if "Prerequisite" in classConstraints: 
-#             preReqStart = classConstraints.index("Prerequisite")
-#             planClasses(classConstraints[preReqStart+1:])
-#         if planClass(courseList[0], classConstraints, classConstraints[preReqStart+1:]) == 1: 
-#             planClasses(courseList[1:])
-#             print(plan)
-#         else: 
-#             print("Error (:)")
-#     elif courseList[0] == "Time" or courseList[0] == "Standing" or courseList[0] == "Alternation":
-#         return 1
-
-def planClass(name, plan): 
-    # if already planned, return term 
-    if name in fullyPlanned: 
-        return plan[name]
-    # set operating defaults to build off of 
-    term = 1
-    year = baseYear 
-    # handle prerequisites 
-    if name in degree.constraints: 
-        classConstraints = degree.constraints[name]
-        if "Prerequisite" in classConstraints: 
-            prereqs = classConstraints[classConstraints.index("Prerequisite")+1]
+plot = []
+costs = {}
             
-    
+# creates an adjacency matrix based off of the 
+def createMatrix(constraints, verbose):
+    # create matrix of zeros, according to the number of classes there are to be plot 
+    matrix = [[0 for col in range(len(constraints))] for row in range(len(constraints))]
+    if verbose: 
+        print("Creating adjacency matrix...")
+    for course in constraints:
+        if "Prerequisite" in constraints[course]:
+            prereqStart = constraints[course].index("Prerequisite")
+            prereqs = constraints[course][prereqStart+1]
+            for i in range(len(prereqs)):
+                row = plot.index(prereqs[i])
+                matrix[row][len(plot)] = 1
+                if verbose: 
+                    print("Plotting: Course {} with the prereq {}".format(course, prereqs[i]))
+        plot.append(course)
+    if verbose: 
+        print("Returning adjacency matrix.\n")
+    return matrix
 
-    
+# takes in a matrix and performs transitive closure on it using Warshall's Algorithm
+def transitiveClosure(mtx, verbose): 
+    if verbose: 
+        print("Performing transitive closure...")
+    # works assuming that the size of the matrix is n x n
+    for k in range(len(mtx[0])):
+        for i in range(len(mtx[0])):
+            for j in range(len(mtx[0])):
+                if matrix[i][k] and matrix[k][j]:
+                    if verbose: 
+                        print("Found: {} is a prereq for {}".format(plot[i], plot[j]))
+                    matrix[i][j] = 1
+    if verbose: 
+        print("Transitive closure complete.\n")
+
+# chooses the classes that will be put in the fourier plan 
+def createCoursePlan(courses, constraints, mtx, verbose):
+    plan = []
+    for course in courses: 
+        if type(course) == list: 
+            plan.extend(getShortestPathOptions(course, mtx, verbose))
+        # set to ignore lab classes 
+        elif course in degree.coursesByName and 'L' not in course: 
+            if verbose:
+                print("Adding {} to course plan".format(course))
+            plan.append(course)
+
+# when there's a choose option, will randomly select a course to plan based on the options with the shortest paths 
+def getShortestPathOptions(options, mtx, verbose):
+    prereqCosts = []
+    chosen = []
+    # if all options are labs, choice is void 
+    for i in range(1, len(options)):
+        if 'L' in options[i]:
+            return chosen 
+    # set to ignore lab options 
+    if parseChoose(options) > 0: 
+        chooseInt = parseChoose(options)
+        for option in options: 
+            # verify option is a course
+            if option in degree.coursesByName: 
+                prereqCosts.append(getPathLength(option, mtx, verbose))
+        for i in range(chooseInt): 
+            if verbose: 
+                print("Choosing {} option(s)...".format(chooseInt))
+            minReq = min(prereqCosts)
+            minOptions = []
+            for j in range(len(prereqCosts)):
+                if prereqCosts[j] == minReq: 
+                    minOptions.append(j)
+            index = random.randint(0, len(minOptions)-1)
+            chosen.append(options[minOptions[index]])
+            if verbose: 
+                print("Chosen: {}, with a cost of {}".format(chosen[i], minReq))
+        if verbose: 
+            print("Finished choosing options.")
+    if verbose: 
+        print("Course plan fully generated.")
+    return chosen
 
 
+# calculates the overall cost to get to any one class using dynamic programming 
+def getPathLength(course, mtx, verbose):
+    if verbose: 
+        print("Calculating cost to get to {}...".format(course))
+    classCol = plot.index(course)
 
-# def planClass(name, constraints, prereqs = []):
-#     possible = [119,220,320,120,221,321,121,222,322,123,223]
-#     if name in fullyPlanned: 
-#         return 1
-#     alternation, time = [],[]
-#     alternationStart = constraints.index("Alternation") if "Alternation" in constraints else len(constraints)
-#     if alternationStart != len(constraints):
-#         alternation = constraints[alternationStart+1]
-#     if ("Time" in constraints):
-#         timeStart = constraints.index("Time")
-#         time = constraints[timeStart+1:alternationStart]
-#     for term in possible:
-#         if (time != []):
-#             # disqualified if term doesn't fit constraint 
-#             sem = floor(term/100)
-#             if sem not in time:
-#                 print("Removed {} because {} isn't a valid scheduling term".format(term,sem))
-#                 possible.remove(term)
-#                 break 
-#             # disqualified if sem already fully planned 
-#             maxload = 3 if sem == 1 or sem == 3 else 2
-#             if len(plan[str(term)]) == maxload: 
-#                 print("Removed {} because term was at max fullness {}.".format(term,maxload))
-#                 possible.remove(term)
-#                 break 
-#         if (alternation != []):
-#             # disqualified if course only available even years and it's an odd year 
-#             year = term % 100
-#             if year % 2 == 0 and 2 not in alternation: 
-#                 print("Removed {} because needed an odd year and year was even.".format(term))
-#                 possible.remove(term)
-#                 break 
-#             # disqualified if course only available odd years and it's an even year 
-#             elif year % 2 != 0 and 1 not in alternation: 
-#                 print("Removed {} because needed an even year and year was odd.".format(term))
-#                 possible.remove(term)
-#                 break 
-#         if (prereqs != []):
-#             for p in prereqs:
-#                 if p in plan[str(term)]: 
-#                     print("Removed {} because prereq {} was in same term.".format(term,p))
-#                     possible.remove(term)
-#                     break 
-#     plan[str(possible[0])].append(name)
-#     fullyPlanned.append(name)
-#     return 1 
+    # base case
+    latestClass = 0
+    # works assuming that the matrix is n x n
+    for row in range(len(mtx[0])):
+        if mtx[row][classCol]: 
+            # if the class has a prereq, take note of the prereq closest to it  
+            latestClass = row
+    if latestClass == 0: 
+        return 0
 
-print("\nPROGRAM RUNNING")
-topDownDP()
+    # check if prereq value is stored 
+    prereq = plot[latestClass]
+    # if prereq cost is stored, return it; else, recursively track cost and return it 
+    costs[course] = costs[prereq] + 1 if prereq in costs else getPathLength(prereq, mtx, verbose) + 1
+    if verbose: 
+        print("The cost to get to {} is {}".format(course, costs[course]))
+    return costs[course]
+
+print("PROGRAM RUNNING\n")
+matrix = createMatrix(degree.constraints, False)
+transitiveClosure(matrix, False)
+coursePlan = createCoursePlan(degree.courses, degree.constraints, matrix, False)
+
+

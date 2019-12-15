@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 import requests
 import re 
-from utils import Term, formatData, Standing, Alternation, Term
+from utils import Term, formatData, Alternation, Term
 
 # Degree Plan Key
 # index | Degree Option
@@ -42,8 +42,6 @@ class Department:
     # will ask for user input that will search for and specify the correct degree plan 
     def getDegree(self): 
         print("Implement later: ask for degree name and look up degree by name")
-        # for i in range(len(self.optionsByTitle)):
-        #     print(self.optionsByTitle[i].get_text())
         degree = self.majorsClasses[8] # Change the index here to change the degree plan according to the key above
         courses = []
         coursesByName = {}
@@ -89,10 +87,6 @@ class Department:
             timesOffered = re.findall(r'even|odd', descr.lower())
             if timesOffered != []: 
                 formatData(timesOffered, Alternation, "Alternation", parsedPrereqs)
-            # search for class standing 
-            year = re.findall(r'freshman|sophomore|junior|senior', descr.lower())
-            if year != []: 
-                formatData(year, Standing, "Standing", parsedPrereqs)
             if parsedPrereqs != []: 
                 constraints.update( { title : parsedPrereqs })
         return constraints 
@@ -149,6 +143,7 @@ class Department:
             if courseNote.find("of the following") != -1:
                 j = i + 1
                 while j < len(courses):
+                    # set to ignore labs 
                     if len(courses[j]) > 12:
                         break
                     else:
