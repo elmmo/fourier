@@ -106,7 +106,7 @@ class Department:
                 cInfo = courseInfo[0].get_text()
                 cName = courseInfo[1].get_text()
                 # in the case that core classes are a part of the degree but not all listed under it 
-                if (cInfo.lower().find('core classes') != -1 and len(cName) > 0):
+                if (cInfo.lower().find('core classes') != -1 and len(cName) > 0 and cName == "27"):
                     self.__parseCourseRequirements(self.__getCoreCoursesTitle(), courses, coursesByName)
                 # special "&" case
                 if (cInfo.find("&") != -1):
