@@ -29,7 +29,9 @@ def formatData(data, category, name, originalArr):
     return originalArr
 
 def parseChoose(course):
-    if course[0].lower().find("one") != -1:
+    if type(course) == type("") or course[0].lower().find("recommended") != -1:
+        return -1000
+    elif course[0].lower().find("one") != -1:
         return 1
     elif course[0].lower().find("two") != -1:
         return 2 
@@ -70,8 +72,59 @@ def getConstraints(course, degree):
                         standing = word
         i = 0
         while i < len(prerequisites):
+            prerequisites[i] = prerequisites[i].replace(",", "")
             if prerequisites[i] not in degree.coursesByName or prerequisites[i].find("L") != -1:
                 del prerequisites[i]
                 i -= 1
             i += 1
     return time, prerequisites, standing
+
+def createAssociation(degree):
+    association = {}
+    groups = []
+    i = 0
+    for course in degree.courses:
+        if type(course) == type(""):
+            association[course] = getConstraints(course, degree)[1]
+        else:
+            groups.append(course)
+            association[i] = []
+            for option in course:
+                for prereq in getConstraints(option, degree)[1]:
+                    association[i].append(prereq)
+            association[i] = list(set(association[i]))
+            i += 1
+    for node in association:
+        i = 0
+        for course in degree.courses:
+            if type(course) == type([]):
+                for option in course:
+                    if option in association[node]:
+                        association[node].remove(option)
+                        association[node].append(i)
+                i += 1
+        association[node] = list(set(association[node]))
+    for node in association:
+        for edge in association[node]:
+            if edge == node:
+                association[node].remove(edge)
+    return association, groups
+
+# This is a depth first search that orders on popped as opposed to on visited
+def TopologicalSort(association):
+    popped = []
+    for node in association:
+        popped = DFS(association, node, popped)
+    return popped
+
+def DFS(association, node, popped):
+    if association[node] == [] and node not in popped:
+        popped.append(node)
+    for edge in association[node]:
+        if association[edge] != []:
+            DFS(association, edge, popped)
+        elif edge not in popped:
+            popped.append(edge)
+    if node not in popped:
+        popped.append(node)
+    return popped
