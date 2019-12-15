@@ -1,20 +1,20 @@
 import re
 
 def parseChoose(course):
-    if type(course) == type(""):
-        return 1
-    numOfCourses = 0
-    if course[0].lower().find("one") != -1:
+    if type(course) == type("") or course[0].lower().find("recommended") != -1:
+        return -1000
+    numOfCourses = -1
+    if course[0].lower().find("one") != -1 or course[0].find("1") != -1:
         numOfCourses = 1
-    elif course[0].lower().find("two") != -1:
+    elif course[0].lower().find("two") != -1 or course[0].find("2") != -1:
         numOfCourses = 2
-    elif course[0].lower().find("three") != -1:
+    elif course[0].lower().find("three") != -1 or course[0].find("3") != -1:
         numOfCourses = 3
-    elif course[0].lower().find("four") != -1:
+    elif course[0].lower().find("four") != -1 or course[0].find("4") != -1:
         numOfCourses = 4
-    elif course[0].lower().find("five") != -1:
+    elif course[0].lower().find("five") != -1 or course[0].find("5") != -1:
         numOfCourses = 5
-    elif course[0].lower().find("six") != -1:
+    elif course[0].lower().find("six") != -1 or course[0].find("6") != -1:
         numOfCourses = 6
     return numOfCourses
 
@@ -50,7 +50,6 @@ def getConstraints(course, degree):
                 i -= 1
             i += 1
     return time, prerequisites, standing
-
 
 def createAssociation(degree):
     association = {}
