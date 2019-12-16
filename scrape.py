@@ -54,6 +54,7 @@ class Department:
         self.__addFootnotes(courses)
         title = self.__getTitle(degree)
         constraints = self.__getConstraints()
+        print(courses)
         return Degree(title, courses, coursesByName, constraints)
     
     # checks for any extra degree notes 

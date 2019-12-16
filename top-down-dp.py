@@ -51,45 +51,53 @@ def createCoursePlan(courses, constraints, mtx, verbose):
     plan = []
     for course in courses: 
         if type(course) == list: 
-            plan.extend(getShortestPathOptions(course, mtx, verbose))
+            plan.extend(getShortestPathOptions(course, mtx, plan, verbose))
         # set to ignore lab classes 
         elif course in degree.coursesByName and 'L' not in course: 
             if verbose:
                 print("Adding {} to course plan".format(course))
             plan.append(course)
+    if verbose: 
+        print("Course plan fully generated.")
     return plan
 
 # when there's a choose option, will randomly select a course to plan based on the options with the shortest paths 
-def getShortestPathOptions(options, mtx, verbose):
+def getShortestPathOptions(options, mtx, plan, verbose):
     prereqCosts = []
     chosen = []
     # if all options are labs, choice is void 
     for i in range(1, len(options)):
         if 'L' in options[i]:
             return chosen 
-    # set to ignore lab options 
     if parseChoose(options) > 0: 
         chooseInt = parseChoose(options)
         for option in options: 
-            # verify option is a course
+            # ignore recommended courses 
+            if option == 'Recommended:':
+                break
+            # verify option is a course 
             if option in degree.coursesByName: 
                 prereqCosts.append(getPathLength(option, mtx, verbose))
-        for i in range(chooseInt): 
+        while chooseInt > 0: 
             if verbose: 
                 print("Choosing {} option(s)...".format(chooseInt))
             minReq = min(prereqCosts)
             minOptions = []
             for j in range(len(prereqCosts)):
                 if prereqCosts[j] == minReq: 
-                    minOptions.append(j)
-            index = random.randint(0, len(minOptions)-1)
-            chosen.append(options[minOptions[index]])
-            if verbose: 
-                print("Chosen: {}, with a cost of {}".format(chosen[i], minReq))
+                    # 1 needs to be added to account for the choose options text 
+                    minOptions.append(j+1)
+            while len(minOptions) > 0 and chooseInt > 0: 
+                index = random.randint(0, len(minOptions)-1)
+                potentialClass = options[minOptions[index]]
+                if potentialClass not in plan: 
+                    chosen.append(potentialClass)
+                    chooseInt -= 1
+                    del minOptions[index]
+                    if verbose:
+                        print("Chosen: {}, with a cost of {}".format(potentialClass, minReq))
         if verbose: 
             print("Finished choosing options.")
-    if verbose: 
-        print("Course plan fully generated.")
     return chosen
 
 
@@ -97,24 +105,28 @@ def getShortestPathOptions(options, mtx, verbose):
 def getPathLength(course, mtx, verbose):
     if verbose: 
         print("Calculating cost to get to {}...".format(course))
-    classCol = plot.index(course)
+    if course in plot:
+        classCol = plot.index(course)
 
-    # base case
-    latestClass = 0
-    # works assuming that the matrix is n x n
-    for row in range(len(mtx[0])):
-        if mtx[row][classCol]: 
-            # if the class has a prereq, take note of the prereq closest to it  
-            latestClass = row
-    if latestClass == 0: 
-        return 0
-
-    # check if prereq value is stored 
-    prereq = plot[latestClass]
-    # if prereq cost is stored, return it; else, recursively track cost and return it 
-    costs[course] = costs[prereq] + 1 if prereq in costs else getPathLength(prereq, mtx, verbose) + 1
-    if verbose: 
-        print("The cost to get to {} is {}".format(course, costs[course]))
+        # base case 
+        latestClass = 0
+        # works assuming the matrix is n x n 
+        for row in range(len(mtx[0])):
+            if mtx[row][classCol]:
+                # if the class has a prereq, take note of the prereq closest to it 
+                latestClass = row 
+        if latestClass == 0:
+            return 0 
+        
+        # check if prereq value is stored 
+        prereq = plot[latestClass]
+        # if prereq cost is stored, return it; else, recursively track cost and return it 
+        costs[course] = costs[prereq] + 1 if prereq in costs else getPathLength(prereq, mtx, verbose) + 1
+        if verbose: 
+            print("The cost to get to {} is {}".format(course, costs[course]))
+    else: 
+        # base case - class with no constraints 
+        costs[course] = 0
     return costs[course]
 
 print("\nPROGRAM RUNNING")
