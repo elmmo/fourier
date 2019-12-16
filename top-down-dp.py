@@ -45,7 +45,6 @@ def transitiveClosure(mtx, verbose):
     if verbose: 
         print("Transitive closure complete.\n")
 
-
 # chooses the classes that will be put in the fourier plan 
 def createCoursePlan(courses, constraints, mtx, verbose):
     plan = []

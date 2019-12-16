@@ -41,12 +41,13 @@ class Department:
 
     # will ask for user input that will search for and specify the correct degree plan 
     def getDegree(self, degIndex = -1): 
-        printDegreeKey(); 
-        if degIndex == -1:
-            choice = input("Which degree would you like to create a list of requirements for? ")
-            choice = int(choice.strip())
-        else: 
-            choice = degIndex
+        # printDegreeKey(); 
+        # if degIndex == -1:
+        #     choice = input("Which degree would you like to create a list of requirements for? ")
+        #     choice = int(choice.strip())
+        # else: 
+        #     choice = degIndex
+        choice = 9
         degree = self.majorsClasses[choice] # Change the index here to change the degree plan according to the key above
         courses = []
         coursesByName = {}
