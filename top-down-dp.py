@@ -81,17 +81,20 @@ def getShortestPathOptions(options, mtx, plan, verbose):
         while chooseInt > 0: 
             if verbose: 
                 print("Choosing {} option(s)...".format(chooseInt))
+            # find the minimum number of prerequisites 
             minReq = min(prereqCosts)
             minOptions = []
             for j in range(len(prereqCosts)):
                 if prereqCosts[j] == minReq: 
                     # 1 needs to be added to account for the choose options text 
                     minOptions.append(j+1)
+            # continue to choose random options until the options are exhausted or the correct number has been chosen 
             while len(minOptions) > 0 and chooseInt > 0: 
                 index = random.randint(0, len(minOptions)-1)
                 potentialClass = options[minOptions[index]]
-                if potentialClass not in plan: 
+                if potentialClass not in plan:  # verify the course isn't already in the plan 
                     chosen.append(potentialClass)
+                    # reduce choose and delete the chosen class from the list of options
                     chooseInt -= 1
                     del minOptions[index]
                     if verbose:

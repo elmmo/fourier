@@ -51,6 +51,7 @@ class Department:
         courses = []
         coursesByName = {}
         self.__parseCourseRequirements(degree, courses, coursesByName)
+        self.__groupChooseOptions(courses)
         self.__addFootnotes(courses)
         title = self.__getTitle(degree)
         constraints = self.__getConstraints()
@@ -140,28 +141,29 @@ class Department:
                     courses.append(cInfo) 
                     if (len(cInfo) < 8 and len(cName) > 1): # for coursesByName, ignore all comments 
                         coursesByName.update({ cInfo : cName })
-        # group requirements like "two of the following courses" into arrays of the form:
-        # ['two of the following courses', 'MA 317', 'MA 357', 'MA 410', 'MA 430W', 'MA 430', 'MA 440']
-        # So it is easier to access which classes are under which requirements
+        return courses, coursesByName
+        
+    # group requirements like "two of the following courses" into arrays of the form:
+    # ['two of the following courses', 'MA 317', 'MA 357', 'MA 410', 'MA 430W', 'MA 430', 'MA 440']
+    # So it is easier to access which classes are under which requirements
+    def __groupChooseOptions(self, courses):
         i = 0
         while i < len(courses):
             courseNote = courses[i] if (type(courses[i]) == str) else courses[i][0]
             if courseNote.find("of the following") != -1:
                 j = i + 1
+                # places all the "one of the following" options into an array and adds it to the list 
                 while j < len(courses):
-                    # set to ignore labs 
+                    # set to ignore labs
                     if len(courses[j]) > 12:
                         break
                     else:
-                        if type(courses[i]) == type([]):
+                        if type(courses[i]) == list:
                             courses[i].append(courses[j])
                         else:
                             courses[i] = [courses[i], courses[j]]
                     j += 1
-                k = 0
-                while k < len(courses[i])-1:
+                for k in range(len(courses[i])-1):
                     del courses[i+1]
-                    k += 1
-
             i += 1
-        return courses, coursesByName
+        return courses
